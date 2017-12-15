@@ -13,6 +13,4 @@ users = pd.read_csv(file, sep=',', names=r_cols)
 
 users.head()
 
-users.iloc[:,6:-1].sum(axis=0).sort_values(ascending=False).plot.bar()
-mp.xlabel('Movie ID')
-mp.ylabel('Count')
+
