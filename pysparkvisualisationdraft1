@@ -1,0 +1,39 @@
+
+
+
+
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+
+
+
+
+#For now have uncommented the file to use
+#file='/homes/sc325/bigdata/movies-comparison.ods'
+
+#Likewise commented out this line
+#users = pd.read_csv(file, sep=',', names=r_cols, encoding='latin-1')
+
+#For now using random data struggling with initial stages
+x = np.random.randn(1, 50)
+y = np.random.randn(1,50)
+a= np.random.randn(1,50)
+b= np.random.randn(1,50)
+c= np.random.randn(1,50)
+d= np.random.randn(1,50)
+#Same here for comments
+ad=plt.scatter(x, y, color='red', s=30) ## here s is size of point in scatter plot
+ae=plt.scatter(a, b, color='blue', s=30) ## here s is size of point in scatter plot
+af=plt.scatter(c, d, color='yellow', s=30) ## here s is size of point in scatter plot
+
+plt.legend([ad, ae, af], ['Action', 'Comedy', 'Drama'],
+                        scatterpoints=1, loc='lower left',
+                        ncol=3, fontsize=8)
+plt.title('Genre for each count', size=20)
+plt.ylabel('Count')
+plt.xlabel('Genre')
+
+plt.show()
