@@ -22,7 +22,7 @@ print movieId_count
 
 bar_graph=users['movieId'].value_counts()[:20].plot(kind='barh')
 
-plt.ylabel('MovieId Count')
-plt.xlabel('MovieId')
+plt.ylabel('MovieId')
+plt.xlabel('MovieId Count')
 plt.title('Bar Graph for MovieId Count')
 plt.show()
