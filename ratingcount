@@ -1,0 +1,9 @@
+How many times the type of rating occurs
+import re
+lines = sc.textFile("/data/movie-ratings/ratings.dat")
+data = lines.map(lambda x: re.split(r’::’, x))  # userid :: movieid :: ratings :: timestamp
+data1 = data.map(lambda x:float(x[2])) #the third field includes the ratings by each user 
+data2 = data1.map(lambda x: (x,1)) #ratings(word) count 
+data3 = data2.reduceByKey(lambda a,b: (a+b)) 
+inmem = data3.persist()
+inmem.saveAsTextFile(“ratings”)
