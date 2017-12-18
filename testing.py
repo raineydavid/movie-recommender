@@ -75,7 +75,7 @@ if __name__=="__main__":
     movie_ratings_pairs_data= user_ratings_data.map(itemitem)
 
 
-    movie_movie_data =movie_ratings_pairs_data.groupByKey().map(lambda line: getSampleInteractions(line[0],line[1],50)
+    movie_movie_data =movie_ratings_pairs_data.groupByKey().map(lambda line: getSampleInteractions(line[0],line[1],50))
     # If a user loves to rate the movie - get rid of their duplicates
 
     # movie_movie_similarity = movie_movie_data.mapValues(lambda line: jaccard_similarity(line[0],line[1])).cache()
