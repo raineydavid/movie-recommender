@@ -1,0 +1,23 @@
+>>> import matplotlib.pyplot as plt
+>>> import numpy as np
+>>> import seaborn as sls
+>>> import re
+
+>>> lines = sc.textFile("/data/movie-ratings/ratings.dat")
+>>> data = lines.map(lambda x: re.split(r'::', x)) 
+>>> data1 = data.map(lambda x:float(x[2]))
+>>> data2 = data1.map(lambda x: (x,1)) 
+>>> data3 = data2.reduceByKey(lambda a,b: (a+b)) 
+
+
+>>> data3.collect()
+>>> datasorted=data3.sortByKey(ascending=True)
+>>> datasorted.collect()      
+>>> datax=datasorted.map(lambda x:(x[0]))
+>>> datax.collect()
+>>> datay=datasorted.map(lambda x:(x[1]))
+>>> datay.collect()
+
+>>> plt.bar(datay, datax)
+TypeError: unsupported operand type(s) for -: 'PipelinedRDD' and 'float'
+(Will Change to Seaborn once plt.bar issue resolved)
