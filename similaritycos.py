@@ -1,13 +1,13 @@
-import numpy 
+import numpy
 from numpy import sqrt
 
 def cosine_similarity(ratingPairs):
-     
+
     numPairs = 0
     sum_xx = sum_yy = sum_xy = 0
-        
+
     for ratingX, ratingY in ratingPairs:
-         
+
         sum_xx += ratingX * ratingX
         sum_yy += ratingY * ratingY
         sum_xy += ratingX * ratingY
@@ -18,7 +18,6 @@ def cosine_similarity(ratingPairs):
 
     score = 0
     if (denominator):
-        score = (numerator / (float(denominator)))
+        score = ((float(numerator)) / (float(denominator)))
 
     return (score, numPairs)
-        
