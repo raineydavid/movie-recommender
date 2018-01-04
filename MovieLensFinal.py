@@ -26,11 +26,12 @@ if __name__=="__main__":
         exit(-1)
     ratings_file = sys.argv[1]
     movies_file = sys.argv[2]
-    if len(sys.argv)> 5:
+    if len(sys.argv)>6:
         movie_id = int(sys.argv[3])
 	threshold = float(sys.argv[4])
 	topN= int(sys.argv[5])
         minOccurence = int(sys.argv[6])
+	algorithm = sys.argv[7].upper()
 
 
 print '{0}, {1}, {2}, {3}, {4}'.format(ratings_file, movies_file, movie_id, threshold, topN)
@@ -58,7 +59,17 @@ movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(100)
 
 movie_pairs_ratings= movie_pairs.groupByKey()
 
-item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
+switch(algorithm):{
+	case algorithm = "JACCARD"
+	item_item_similarities = movie_pairs_ratings.mapValues(jaccard_similarity).persist()
+	break;
+	case algorithm = "COSINE"
+	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
+	break;
+	default:
+	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
+	break;
+}
 
 item_item_sorted=item_item_similarities.sortByKey()
 
