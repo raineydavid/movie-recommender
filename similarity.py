@@ -89,10 +89,11 @@ def cosine_similarity(ratingPairs):
 # Action|Adventure|Drama|Fantasy
 # Comedy|Drama|Romance
 
-jaccard_similarity("", "")
-jaccard_similarity("", "Comedy")
-jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "")
-jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Drama")
-jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Children|Comedy|Fantasy")
-jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Drama|Fantasy")
-jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Children|Comedy|Fantasy|Romance")
+jaccard_similarity((2.0,3.0),(2.0,5.0))
+# jaccard_similarity("", "")
+# jaccard_similarity("", "Comedy")
+# jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "")
+# jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Drama")
+# jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Children|Comedy|Fantasy")
+# jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Drama|Fantasy")
+# jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "Adventure|Animation|Children|Comedy|Fantasy|Romance")
