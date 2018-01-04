@@ -13,28 +13,27 @@ import re
 
 
 
-numPartitions = 11
 movies_data = sc.textFile("/FileStore/tables/movies")
 ratings_data = sc.textFile("/FileStore/tables/ratings")
 
 movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
 
-ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).repartition(numPartitions)
+ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
 
 user_ratings_data= ratings.join(ratings)
 
 uniqueJoin = user_ratings_data.filter(uniqueFilter)
 
-movie_pairs = uniqueJoin.map(itemitem)
+movie_pairs = uniqueJoin.map(itemitem).partitionBy(100)
 
-#movie_pairs_ratings=movie_pairs.groupByKey()
+# movie_pairs_ratings=movie_pairs.groupByKey()
 
-movie_pairs_ratings=movie_pairs.reduceByKey(lambda a,b: (a,) + (b,)) 
+# movie_pairs_ratings=movie_pairs.reduceByKey(lambda a,b: (a,) + (b,)) 
 
 item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
 
-#item_item_sorted=item_item_similarities.sortByKey()
+item_item_sorted=item_item_similarities.sortByKey()
 
-#item_item_filtered = item_item_sorted.filter(lambda x: x[1][0] >= 0.8)
+
 item_item_saved = item_item_similarities.persist()
 item_item_saved.saveAsTextFile("/FileStore/movie-similar0")
