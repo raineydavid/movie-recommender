@@ -2,7 +2,7 @@ import findspark
 findspark.init()
 
 
-import pyspark
+
 import sys
 import re
 import random
@@ -11,40 +11,13 @@ import random
 from pyspark import SparkConf, SparkContext
 sc = SparkContext(appName = "MovieLens")
 from math import sqrt
-#sc.addPyFile("similaritycos.py")
+sc.addPyFile("similarity.py")
 sc.addPyFile("movielensfcn.py")
-#import similaritycos
-import movielensfcn
+
+
 from movielensfcn import parseMovies, removeDuplicates, itemItem
-#from similaritycos import cosine_similarity
-
-#def sqrt(number):
-    
- #   return abs(number**(0.5))
-
-
-def cosine_similarity(ratingPairs):
-
-    numPairs = 0
-    sum_xx = sum_yy = sum_xy = 0
-
-    for ratingX, ratingY in ratingPairs:
-
-        sum_xx += ratingX * ratingX
-        sum_yy += ratingY * ratingY
-        sum_xy += ratingX * ratingY
-        numPairs += 1
-
-    numerator = sum_xy
-    denominator = sqrt(sum_xx) * sqrt(sum_yy)
-
-    score = 0
-    if (denominator):
-        score = ((float(numerator)) / (float(denominator)))
-
-    return (score, numPairs)
-
-
+import similarity
+from similarity import cosine_similarity, jaccard_similarity
 
 
 if __name__=="__main__":
