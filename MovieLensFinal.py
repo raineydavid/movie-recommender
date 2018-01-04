@@ -59,17 +59,13 @@ movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(100)
 
 movie_pairs_ratings= movie_pairs.groupByKey()
 
-switch(algorithm):{
-	case algorithm = "JACCARD"
+if algorithm == "JACCARD" :
 	item_item_similarities = movie_pairs_ratings.mapValues(jaccard_similarity).persist()
-	break;
-	case algorithm = "COSINE"
+elif model == "COSINE" :
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
-	break;
-	default:
+else:
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
-	break;
-}
+
 
 item_item_sorted=item_item_similarities.sortByKey()
 
