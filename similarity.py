@@ -89,7 +89,7 @@ def cosine_similarity(ratingPairs):
 # Action|Adventure|Drama|Fantasy
 # Comedy|Drama|Romance
 
-jaccard_similarity((2.0,3.0),(2.0,5.0))
+jaccard_similarity(((2.0,3.0),(2.0,5.0)))
 # jaccard_similarity("", "")
 # jaccard_similarity("", "Comedy")
 # jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "")
