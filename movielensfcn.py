@@ -31,7 +31,7 @@ def removeDuplicates((userid, ratings)): #movies the user has rated
     (item2, value2) = ratings[1]
     return item1 < item2
 
-def itemitem((item,values)):
+def itemItem((item,values)):
     (itemA, valueA) = values[0]
     (itemB, valueB) = values[1]
     return ((itemA, itemB), (valueA, valueB))
