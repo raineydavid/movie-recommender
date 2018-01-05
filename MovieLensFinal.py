@@ -24,6 +24,8 @@ from movielensfcn import parseMovies, removeDuplicates, itemItem
 if __name__=="__main__":
     if len(sys.argv)< 3:
         print >> sys.stderr, "Usage: MovieLens ratings movies"
+	print >> "Example parameters filename ratingsfile moviesfile filmid threshold topN COSINE"
+	print >> "spark-submit MovieLensFinal.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat  1 .95 50 100 COSINE"
         exit(-1)
     ratings_file = sys.argv[1]
     movies_file = sys.argv[2]
@@ -35,7 +37,7 @@ if __name__=="__main__":
         algorithm = sys.argv[7].upper()
 
 
-print '{0}, {1}, {2}, {3}, {4}'.format(ratings_file, movies_file, movie_id, threshold, topN)
+print '{0}, {1}, {2}, {3}, {4} {5} {6} {7}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
 
 def jaccard_similarity(ratingPairs):
  #   "The Jaccard similarity coefficient is a commonly used indicator of the similarity between two sets. For sets A and B it is defined to be the ratio of the number of elements of their intersection and the number of elements of their union If A and B are both empty, we define Jaccard_Similarity(A,B) = 1."
