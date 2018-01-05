@@ -3,26 +3,23 @@
 import findspark
 findspark.init()
 
-
-import pyspark
+from pyspark import SparkConf, SparkContext
 import sys
 import re
 import random
 #import numpy
-
-from pyspark import SparkConf, SparkContext
-sc = SparkContext(appName = "MovieLens")
 from math import sqrt
+from movielensfcn import parseMovies, removeDuplicates, itemItem
+
+sc = SparkContext(appName = "MovieLens")
+
 #sc.addPyFile("similarity.py")
 sc.addPyFile("movielensfcn.py")
 
-
-from movielensfcn import parseMovies, removeDuplicates, itemItem
 #from similarity import cosine_similarity, jaccard_similarity
 
-
 if __name__=="__main__":
-    if len(sys.argv)< 3:
+    if len(sys.argv)< 8:
         print >> sys.stderr, "Usage: MovieLens ratings movies"
 	print >> "Example parameters filename ratingsfile moviesfile filmid threshold topN COSINE"
 	print >> "spark-submit MovieLensFinal.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat  1 .95 50 100 COSINE"
@@ -35,7 +32,6 @@ if __name__=="__main__":
         topN= int(sys.argv[5])
         minOccurence = int(sys.argv[6])
         algorithm = sys.argv[7].upper()
-
 
 print '{0}, {1}, {2}, {3}, {4} {5} {6} {7}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
 
@@ -86,13 +82,15 @@ movies_data = sc.textFile(movies_file)
 # data = sc.parallelize([(2.0,5.0), (2.5,4.5), (3.0,1.0), (5.0,2.0)])
 # data1 = data.map(cosine_similarity).saveAsTextFile("test1")
 
-ratings_header = ratings_data.take(1)[0]
-movies_header = movies_data.take(1)[0]
-
-movies= movies_data.filter(lambda line: line!=movies_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
-
-ratings = ratings_data.filter(lambda line: line!=ratings_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
-
+if (ratings_file.find('dat')):
+	movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
+	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
+else:
+	ratings_header = ratings_data.take(1)[0]
+	movies_header = movies_data.take(1)[0]
+	movies= movies_data.filter(lambda line: line!=movies_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
+	ratings = ratings_data.filter(lambda line: line!=ratings_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
+.
 user_ratings_data = ratings.join(ratings)
 
 unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
