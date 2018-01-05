@@ -80,10 +80,6 @@ def cosine_similarity(ratingPairs):
 
     return (score, numPairs)
 
-
-
-
-
 ratings_data = sc.textFile(ratings_file)
 movies_data = sc.textFile(movies_file)
 
