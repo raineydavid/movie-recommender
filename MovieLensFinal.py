@@ -97,8 +97,6 @@ user_ratings_data = ratings.join(ratings)
 
 unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
 
-
-
 movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(100)
 
 movie_pairs_ratings= movie_pairs.groupByKey()
@@ -112,7 +110,6 @@ else:
 
 
 item_item_sorted=item_item_similarities.sortByKey()
-
 
 #item_item_sorted.saveAsTextFile("movie-similar0001")
 # Sample output
