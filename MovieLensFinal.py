@@ -21,8 +21,8 @@ sc.addPyFile("movielensfcn.py")
 if __name__=="__main__":
     if len(sys.argv)< 8:
         print >> sys.stderr, "Usage: MovieLens ratings movies"
-	print >> "Example parameters filename ratingsfile moviesfile filmid threshold topN COSINE"
-	print >> "spark-submit MovieLensFinal.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat  1 .95 50 100 COSINE"
+	print >> sys.stderr,"Usage: programname ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm"
+	print >> sys.stderr, "spark-submit MovieLensFinal.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat  1 .95 50 100 COSINE"
         exit(-1)
     ratings_file = sys.argv[1]
     movies_file = sys.argv[2]
