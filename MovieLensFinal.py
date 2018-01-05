@@ -1,8 +1,10 @@
+#!/usr/bin/python
+
 import findspark
 findspark.init()
 
 
-
+import pyspark
 import sys
 import re
 import random
@@ -11,13 +13,12 @@ import random
 from pyspark import SparkConf, SparkContext
 sc = SparkContext(appName = "MovieLens")
 from math import sqrt
-sc.addPyFile("similarity.py")
+#sc.addPyFile("similarity.py")
 sc.addPyFile("movielensfcn.py")
 
 
 from movielensfcn import parseMovies, removeDuplicates, itemItem
-import similarity
-from similarity import cosine_similarity, jaccard_similarity
+#from similarity import cosine_similarity, jaccard_similarity
 
 
 if __name__=="__main__":
@@ -28,13 +29,58 @@ if __name__=="__main__":
     movies_file = sys.argv[2]
     if len(sys.argv)>6:
         movie_id = int(sys.argv[3])
-	threshold = float(sys.argv[4])
-	topN= int(sys.argv[5])
+        threshold = float(sys.argv[4])
+        topN= int(sys.argv[5])
         minOccurence = int(sys.argv[6])
-	algorithm = sys.argv[7].upper()
+        algorithm = sys.argv[7].upper()
 
 
 print '{0}, {1}, {2}, {3}, {4}'.format(ratings_file, movies_file, movie_id, threshold, topN)
+
+def jaccard_similarity(ratingPairs):
+ #   "The Jaccard similarity coefficient is a commonly used indicator of the similarity between two sets. For sets A and B it is defined to be the ratio of the number of elements of their intersection and the number of elements of their union If A and B are both empty, we define Jaccard_Similarity(A,B) = 1."
+
+    numPairs = 0
+    intersect_xy=setX=setY={}
+    for ratingX, ratingY in ratingPairs:
+        setX =set(ratingX).union(setX)
+        setY =set(ratingY).union(setY)
+        intersect_xy = setX.intersect(setY)
+        numPairs += 1
+
+    numerator = intersect_xy
+    denominator = len(setX) + len(setY) - len(intersectXandY)
+
+    score = 0
+    if (denominator):
+        score = ((float(numerator)) / (float(denominator)))
+
+    return (score, numPairs)
+    
+def cosine_similarity(ratingPairs):
+
+    numPairs = 0
+    sum_xx = sum_yy = sum_xy = 0
+
+    for ratingX, ratingY in ratingPairs:
+
+        sum_xx += ratingX * ratingX
+        sum_yy += ratingY * ratingY
+        sum_xy += ratingX * ratingY
+        numPairs += 1
+
+    numerator = sum_xy
+    denominator = sqrt(sum_xx) * sqrt(sum_yy)
+
+    score = 0
+    if (denominator):
+        score = ((float(numerator)) / (float(denominator)))
+
+    return (score, numPairs)
+
+
+
+
 
 ratings_data = sc.textFile(ratings_file)
 movies_data = sc.textFile(movies_file)
@@ -61,7 +107,7 @@ movie_pairs_ratings= movie_pairs.groupByKey()
 
 if algorithm == "JACCARD" :
 	item_item_similarities = movie_pairs_ratings.mapValues(jaccard_similarity).persist()
-elif model == "COSINE" :
+elif algorithm == "COSINE" :
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
 else:
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
@@ -89,7 +135,7 @@ if (topN==0):
 
 results = filteredResults.map(lambda((x,y)): (y,x)).sortByKey(ascending = False)
 resultsTopN = results.take(topN)
-results.saveAsTextFile("top10test6")
+results.saveAsTextFile("top10test9")
 
  #   print "Top 10 similar movies for " + nameDict[movieID]
  #   for result in resultsTopN:
@@ -99,4 +145,3 @@ results.saveAsTextFile("top10test6")
  #       if (similarMovieID == movieID):
  #           similarMovieID = pair[1]
  #       print nameDict[similarMovieID] + "\tscore: " + str(sim[0]) + "\tstrength: " + str(sim[1])
-
