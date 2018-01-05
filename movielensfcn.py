@@ -26,7 +26,7 @@ def getSampleInteractions(user, film, n):
         return user, film
     return
 
-def uniqueFilter((userid, ratings)): #movies the user has rated 
+def removeDuplicates((userid, ratings)): #movies the user has rated 
     (item1, value1) = ratings[0]
     (item2, value2) = ratings[1]
     return item1 < item2
