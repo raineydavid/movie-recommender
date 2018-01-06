@@ -138,3 +138,5 @@ results.saveAsTextFile("top10test9")
  #       if (similarMovieID == movieID):
  #           similarMovieID = pair[1]
  #       print nameDict[similarMovieID] + "\tscore: " + str(sim[0]) + "\tstrength: " + str(sim[1])
+	
+sc.stop()
