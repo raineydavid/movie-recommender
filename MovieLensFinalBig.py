@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#spark-submit MovieLensBig1.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat 1 0.97 20 1000 COSINE
+#spark-submit <name of job py file>.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat 1 0.97 20 1000 COSINE
 import findspark
 findspark.init()
 
