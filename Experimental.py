@@ -101,7 +101,7 @@ movies_data = sc.textFile(movies_file)
 # data1 = data.map(cosine_similarity).saveAsTextFile("test1")
 
 if (ratings_file.find('dat')):
-	movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
+	movies= movies_data.map(parseMovies).map(lambda x: (int(x[0]),(x[1],x[2])))
 	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
 else:
 	ratings_header = ratings_data.take(1)[0]
