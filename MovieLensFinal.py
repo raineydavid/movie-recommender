@@ -36,22 +36,30 @@ if __name__=="__main__":
 print '{0}, {1}, {2}, {3}, {4} {5} {6}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
 
 def jaccard_similarity(ratingPairs):
- #   "The Jaccard similarity coefficient is a commonly used indicator of the similarity between two sets. For sets A and B it is defined to be the ratio of the number of elements of their intersection and the number of elements of their union If A and B are both empty, we define Jaccard_Similarity(A,B) = 1."
-
+    
     numPairs = 0
-    intersect_xy=setX=setY={}
+    intersect_xy=set()
+    setX = set()
+    setY=set()
+        
     for ratingX, ratingY in ratingPairs:
-        setX =set(ratingX).union(setX)
-        setY =set(ratingY).union(setY)
-        intersect_xy = setX.intersect(setY)
-        numPairs += 1
+	
+	setX.add(ratingX)
+	#print(setX)
 
-    numerator = intersect_xy
-    denominator = len(setX) + len(setY) - len(intersectXandY)
+	setY.add(ratingY)
+	#print(setY)
+    	intersect_xy = setX.intersection(setY)
+    	#print(intersect_xy)
+    	#print(type(intersect_xy))
+	numPairs += 1
+
+    numerator = float(len(intersect_xy))
+    denominator = float(len(setX) + len(setY) - len(intersect_xy))
 
     score = 0
     if (denominator):
-        score = ((float(numerator)) / (float(denominator)))
+        score = numerator / denominator
 
     return (score, numPairs)
     
