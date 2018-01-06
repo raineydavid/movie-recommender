@@ -1,4 +1,14 @@
 #!/usr/bin/python
+"""
+A similarity implementation that uses NumPy (http://www.numpy.org)
+to act on batches of input data using efficient matrix operations.
+"""
+from __future__ import print_function
+
+import sys
+
+import numpy as np
+from pyspark.sql import SparkSession
 
 import findspark
 findspark.init()
@@ -34,6 +44,14 @@ if __name__=="__main__":
         algorithm = sys.argv[7].upper()
 
 print '{0}, {1}, {2}, {3}, {4} {5} {6}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
+
+def matrix(iterator):
+    strs = list(iterator)
+    matrix = np.zeros((len(strs), D + 1))
+    for i, s in enumerate(strs):
+        matrix[i] = np.fromstring(s.replace(',', ' '), dtype=np.float32, sep=' ')
+    return [matrix]
+
 
 def jaccard_similarity(ratingPairs):
  #   "The Jaccard similarity coefficient is a commonly used indicator of the similarity between two sets. For sets A and B it is defined to be the ratio of the number of elements of their intersection and the number of elements of their union If A and B are both empty, we define Jaccard_Similarity(A,B) = 1."
