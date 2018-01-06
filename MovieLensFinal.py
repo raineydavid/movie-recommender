@@ -11,7 +11,7 @@ import random
 from math import sqrt
 from movielensfcn import parseMovies, removeDuplicates, itemItem
 
-sc = SparkContext(appName = "MovieLens")
+sc = SparkContext(appName = "MovieLens").getOrCreate()
 
 #sc.addPyFile("similarity.py")
 sc.addPyFile("movielensfcn.py")
