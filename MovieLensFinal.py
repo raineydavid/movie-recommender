@@ -84,7 +84,7 @@ movies_data = sc.textFile(movies_file)
 
 if (ratings_file.find('dat')):
 	movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
-	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
+	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(600)
 else:
 	ratings_header = ratings_data.take(1)[0]
 	movies_header = movies_data.take(1)[0]
@@ -95,7 +95,7 @@ user_ratings_data = ratings.join(ratings)
 
 unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
 
-movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(100)
+movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(600)
 
 movie_pairs_ratings= movie_pairs.groupByKey()
 
