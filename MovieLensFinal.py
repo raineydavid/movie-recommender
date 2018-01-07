@@ -139,6 +139,9 @@ results = filteredResults.map(lambda((x,y)): (y,x)).sortByKey(ascending = False)
 resultsTopN = results.take(topN)
 results.saveAsTextFile("top10test9")
 
+resultsKey = resultsTopN.map(lambda((x,y)): (y[0],x[0])) #y[0]-movieid, x[0]- simialarity 
+topMovies = resultsKey.join(movies.map(parseMovies)) #don't really need field[2] (the genre) in parseMovies?
+
  #   print "Top 10 similar movies for " + nameDict[movieID]
  #   for result in resultsTopN:
  #       (sim, pair) = result
