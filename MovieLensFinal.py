@@ -28,39 +28,30 @@ if __name__=="__main__":
     movies_file = sys.argv[2]
     if len(sys.argv)>6:
         movie_id = int(sys.argv[3])
-        threshold = float(sys.argv[4])
+        threshold = float(sys.argv[4]) #set to 0.97 when COSINE, 0.5 when ADJCOSINE
         topN= int(sys.argv[5])
         minOccurence = int(sys.argv[6])
         algorithm = sys.argv[7].upper()
 
 print '{0}, {1}, {2}, {3}, {4} {5} {6}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
 
-def jaccard_similarity(ratingPairs):
-    
+def adj_cosine_similarity(ratingPairs):
+
     numPairs = 0
-    intersect_xy=set()
-    setX = set()
-    setY=set()
-        
+    sum_xx = sum_yy = sum_xy = sum_x = sum_y = 0
+
     for ratingX, ratingY in ratingPairs:
-	
-	setX.add(ratingX)
-	#print(setX)
-
-	setY.add(ratingY)
-	#print(setY)
-    	intersect_xy = setX.intersection(setY)
-    	#print(intersect_xy)
-    	#print(type(intersect_xy))
-	numPairs += 1
-
-    numerator = float(len(intersect_xy))
-    denominator = float(len(setX) + len(setY) - len(intersect_xy))
-
+        sum_xx += ratingX * ratingX
+        sum_yy += ratingY * ratingY
+        sum_xy += ratingX * ratingY
+        sum_x += ratingX
+        sum_y += ratingY
+        numPairs += 1
+    numerator = (sum_xy * numPairs) - (sum_x * sum_y)
+    denominator = sqrt((sum_xx * numPairs) - (sum_x**2)) * sqrt((sum_yy * numPairs) - (sum_y**2))
     score = 0
     if (denominator):
-        score = numerator / denominator
-
+        score = (numerator / (float(denominator)))
     return (score, numPairs)
     
 def cosine_similarity(ratingPairs):
@@ -108,8 +99,8 @@ else:
 
 movie_pairs_ratings= movie_pairs.groupByKey()
 
-if algorithm == "JACCARD" :
-	item_item_similarities = movie_pairs_ratings.mapValues(jaccard_similarity).persist()
+if algorithm == "ADJCOSINE" :
+	item_item_similarities = movie_pairs_ratings.mapValues(adj_cosine_similarity).persist()
 elif algorithm == "COSINE" :
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
 else:
