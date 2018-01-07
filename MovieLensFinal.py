@@ -35,7 +35,7 @@ if __name__=="__main__":
 
 print '{0}, {1}, {2}, {3}, {4} {5} {6}'.format(ratings_file, movies_file, movie_id, threshold, topN, minOccurence, algorithm)
 
-def adj_cosine_similarity(ratingPairs):
+def pearson_similarity(ratingPairs):
 
     numPairs = 0
     sum_xx = sum_yy = sum_xy = sum_x = sum_y = 0
@@ -101,8 +101,8 @@ else:
 
 movie_pairs_ratings= movie_pairs.groupByKey()
 
-if algorithm == "ADJCOSINE" :
-	item_item_similarities = movie_pairs_ratings.mapValues(adj_cosine_similarity).persist()
+if algorithm == "PEARSON" :
+	item_item_similarities = movie_pairs_ratings.mapValues(pearson_similarity).persist()
 elif algorithm == "COSINE" :
 	item_item_similarities = movie_pairs_ratings.mapValues(cosine_similarity).persist()
 else:
