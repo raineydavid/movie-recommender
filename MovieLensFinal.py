@@ -81,13 +81,15 @@ movies_data = sc.textFile(movies_file)
 # data = sc.parallelize([(2.0,5.0), (2.5,4.5), (3.0,1.0), (5.0,2.0)])
 # data1 = data.map(cosine_similarity).saveAsTextFile("test1")
 
-if (ratings_file.find('dat')):
+if (ratings_file.find('.dat') !=-1):
+	print "dat file"
 	movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
 	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(800)
 	user_ratings_data = ratings.join(ratings)
 	unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
 	movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(800)
 else:
+	print "csv file"
 	ratings_header = ratings_data.take(1)[0]
 	movies_header = movies_data.take(1)[0]
 	movies= movies_data.filter(lambda line: line!=movies_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
