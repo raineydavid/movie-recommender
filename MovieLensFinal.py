@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+#example: spark-submit MovieLensFinal1.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat 1 0.97 10 1000 COSINE
+
 import findspark
 findspark.init()
 
