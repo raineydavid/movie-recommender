@@ -9,7 +9,7 @@ import re
 import random
 #import numpy
 from math import sqrt
-from movielensfcn import parseMoviesA, removeDuplicates, itemItem
+from movielensfcn import removeDuplicates, itemItem
 
 sc = SparkContext(appName = "MovieLens").getOrCreate()
 sqlContext = sql.SQLContext(sc)
@@ -148,7 +148,7 @@ top_N_Movies = topMoviesJoin.map(lambda (x,y): (y[0],(x,y[1][0].encode('ascii', 
 
 
 
-top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x))
+top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x)).collect()
 
 #saved to get full movie title
 top_N_Movies_Sorted.saveAsTextFile("TOP10")
