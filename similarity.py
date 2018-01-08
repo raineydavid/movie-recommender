@@ -39,6 +39,25 @@ def jaccard_similarity(ratingPair):
     # list(setA + setB)/list(setA & setB)
 #     return c
 
+def pearson_similarity(ratingPairs):
+
+    numPairs = 0
+    sum_xx = sum_yy = sum_xy = sum_x = sum_y = 0
+
+    for ratingX, ratingY in ratingPairs:
+        sum_xx += ratingX * ratingX
+        sum_yy += ratingY * ratingY
+        sum_xy += ratingX * ratingY
+        sum_x += ratingX
+        sum_y += ratingY
+        numPairs += 1
+    numerator = (sum_xy * numPairs) - (sum_x * sum_y)
+    denominator = sqrt((sum_xx * numPairs) - (sum_x**2)) * sqrt((sum_yy * numPairs) - (sum_y**2))
+    score = 0
+    if (denominator):
+        score = (numerator / (float(denominator)))
+    return (score, numPairs)
+
 def cosine_similarity(ratingPairs):
 
     numPairs = 0
@@ -89,7 +108,7 @@ def cosine_similarity(ratingPairs):
 # Action|Adventure|Drama|Fantasy
 # Comedy|Drama|Romance
 
-jaccard_similarity(((2.0,3.0),(2.0,5.0)))
+#jaccard_similarity(((2.0,3.0),(2.0,5.0)))
 # jaccard_similarity("", "")
 # jaccard_similarity("", "Comedy")
 # jaccard_similarity("Adventure|Animation|Children|Comedy|Fantasy", "")
