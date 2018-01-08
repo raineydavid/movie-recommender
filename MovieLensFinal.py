@@ -150,7 +150,8 @@ top_N_Movies = topMoviesJoin.map(lambda (x,y): (y[0],(x,y[1][0].encode('ascii', 
 
 top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x))
 
-top_N_Movies_Sorted.saveAsTextFile("TOP101")
+#saved to get full movie title
+top_N_Movies_Sorted.saveAsTextFile("TOP10")
 
 #to get the string of the movie we want to recommend for  
 film_in_q = resultsTopN.map(lambda((x,y)): (y[0],x[0]))
@@ -159,17 +160,10 @@ focus_join= film_in_q.join(movies)
 
 one_movie = focus_join.map(lambda (x,y): (y[1][0].encode('ascii', 'ignore'))).take(1)
 
-#one_movie.saveAsTextFile("FOCUSMOVIE")
-
-#print("For movie:" + one_movie)
-
-#one_movie_DF = sqlContext.createDataFrame(one_movie, ["MOVIE TITLE"])
-#one_movie_DF.show()
 
 print("For movie:" + str(one_movie) + ", the top10 recommended films are:")
 top_N_DF = sqlContext.createDataFrame(top_N_Movies_Sorted, ["Top 10 Recommended Movies(Year)","Movie ID","Similarity"])
 
 top_N_DF.show()
-#top_N_DF.saveAsTable("MOVIES")
-#top_N_DF.write.format('com.databricks.spark.csv').save('MOVIES.csv')	
+	
 sc.stop()
