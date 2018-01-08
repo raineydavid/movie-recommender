@@ -150,7 +150,7 @@ top_N_Movies = topMoviesJoin.map(lambda (x,y): (y[0],(x,y[1][0].encode('ascii', 
 
 
 
-top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x)).collect()
+top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x))
 
 #saved to get full movie title
 top_N_Movies_Sorted.saveAsTextFile("TOP10")
