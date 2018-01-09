@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-#example: spark-submit MovieLensFinal1.py /data/movie-ratings/ratings.dat /data/movie-ratings/movies.dat 1 0.97 10 1000 COSINE
-
 import findspark
 findspark.init()
 
@@ -9,13 +7,12 @@ from pyspark import SparkConf, SparkContext, sql
 import sys
 import re
 import random
-#import numpy
 from math import sqrt
 from movielensfcn import removeDuplicates, itemItem
 
 sc = SparkContext(appName = "MovieLens").getOrCreate()
 sqlContext = sql.SQLContext(sc)
-#sc.addPyFile("similarity.py")
+
 sc.addPyFile("movielensfcn.py")
 
 #from similarity import cosine_similarity, jaccard_similarity
@@ -80,25 +77,24 @@ def cosine_similarity(ratingPairs):
 ratings_data = sc.textFile(ratings_file)
 movies_data = sc.textFile(movies_file)
 
-# data = sc.parallelize([(2.0,5.0), (2.5,4.5), (3.0,1.0), (5.0,2.0)])
-# data1 = data.map(cosine_similarity).saveAsTextFile("test1")
 
+numPartitions = 1000
 if (ratings_file.find('.dat') !=-1):
 	print "dat file"
 	movies= movies_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
-	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(800)
+	ratings = ratings_data.map(lambda line: re.split(r'::',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(numPartitions)
 	user_ratings_data = ratings.join(ratings)
 	unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
-	movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(800)
+	movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(numPartitions)
 else:
 	print "csv file"
 	ratings_header = ratings_data.take(1)[0]
 	movies_header = movies_data.take(1)[0]
 	movies= movies_data.filter(lambda line: line!=movies_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(x[1],x[2])))
-	ratings = ratings_data.filter(lambda line: line!=ratings_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(100)
+	ratings = ratings_data.filter(lambda line: line!=ratings_header).map(lambda line: re.split(r',',line)).map(lambda x: (int(x[0]),(int(x[1]),float(x[2])))).partitionBy(numPartitions)
 	user_ratings_data = ratings.join(ratings)
 	unique_joined_ratings = user_ratings_data.filter(removeDuplicates)
-	movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(100)
+	movie_pairs = unique_joined_ratings.map(itemItem).partitionBy(numPartitions)
 
 
 movie_pairs_ratings= movie_pairs.groupByKey()
@@ -146,13 +142,12 @@ topMoviesJoin = resultsKey.join(movies)
 top_N_Movies = topMoviesJoin.map(lambda (x,y): (y[0],(x,y[1][0].encode('ascii', 'ignore')))).sortByKey(ascending = False)
 
 # sample output: (0.9870973879980668, (3114, 'Toy Story 2 (1999)'))
-#top_N_Movies.saveAsTextFile("hh6")
+top_N_Movies.saveAsTextFile("movie-sim")
 
 
 
-top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x))
+top_N_Movies_Sorted = top_N_Movies.map(lambda (x,y): (y[1],y[0],x)).repartition(1)
 
-#saved to get full movie title
 top_N_Movies_Sorted.saveAsTextFile("TOP10")
 
 #to get the string of the movie we want to recommend for  
@@ -167,5 +162,6 @@ print("For movie:" + str(one_movie) + ", the top10 recommended films are:")
 top_N_DF = sqlContext.createDataFrame(top_N_Movies_Sorted, ["Top 10 Recommended Movies(Year)","Movie ID","Similarity"])
 
 top_N_DF.show()
+#top_N_DF.saveAsTable("MOVIES")
 	
 sc.stop()
